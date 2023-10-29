@@ -1,0 +1,1 @@
+This folder contains every code related to the estimation of the forces and accelerations at main deployment
