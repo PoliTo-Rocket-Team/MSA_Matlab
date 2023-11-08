@@ -1,0 +1,11 @@
+clc
+clearvars -except O*
+close all
+for i=1:length(O3700)
+plot([11077,12066,13628,13766,137],[O3700(i),O5800(i),O25000(i),O4900(i),O8000(i)])
+grid on
+hold on
+xlabel('impulse (Ns)')
+ylabel('apogee (m)')
+end
+legend('20 kg','22 kg','24 kg','26 kg','28 kg','30 kg')
