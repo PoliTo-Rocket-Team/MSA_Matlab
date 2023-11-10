@@ -199,7 +199,6 @@ clc; clear all; close all;
 load("easyDATAwV")
 load("Boost_Data")
 load("acceleration_SIM")
-
 %Mass of the rocket
 
 %dry_mass
@@ -271,7 +270,32 @@ plot(timetot_SIM,DragVector_SIM','b','LineWidth',1.5,'DisplayName','Simulated Dr
 grid minor
 legend("location","northeast")
 
+%%
+clc
+clear all
+close all
 
+load("OpenRocket_BoostData.mat")
+load('easyDATAwV.mat')
+
+%dry_mass
+m_0 = 8.219;
+%wet mass
+m = 10.132;
+
+time_EM = (linspace(0,3.80,380))';
+acc_EM = EASYdata(2:381,2);
+thrust_s = spline(time,thrust,time_EM);
+thrust_s = [thrust_s(8:end) ; zeros(7,1)];
+% length(time_EM)
+% length(acc_EM)
+% length(thrust_s)
+
+f_mass = (m-m_0)/3.8;
+mt = @(t) m - f_mass*t ;
+Drag_during_burnout =@(t)  thrust_s - mt(t).*(acc_EM+9.81);
+DragVector = Drag_during_burnout(time_EM); 
+plot(time_EM,DragVector,'k','LineWidth',1.5,'DisplayName',' Real Drag Force during boostphase and coasting')
 
 %% Comparison Acceleration Simulated and Real Acceleration Easymini
 
