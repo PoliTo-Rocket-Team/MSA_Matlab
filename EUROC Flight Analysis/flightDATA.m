@@ -382,11 +382,11 @@ drag_s = Rocketpydata(2:349,5)
 DragVector =[DragVector',Drag_coasting']'   %adding to DragVector the drag coasting
 timeE =[timeE',time_EM']'
 
-% for element = [1:size(DragVector)]
-%     if DragVector(element)<0
-%         DragVector(element)=0;
-%     end
-% end
+for element = [1:size(DragVector)]
+    if DragVector(element)<0
+        DragVector(element)=0;
+    end
+end
 
 for element = [1:size(drag_s)]
     if drag_s(element)<0
