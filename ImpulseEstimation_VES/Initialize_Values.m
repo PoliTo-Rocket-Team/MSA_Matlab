@@ -1,7 +1,7 @@
 clc
-clearvars -except O*
+clearvars -except k*
 close all
-thrust_table = readmatrix("Cesaroni_40960O8000-P.csv");
+thrust_table = readmatrix("AeroTech_O5500X-PS.csv");
 thrust = thrust_table(:,2);
 thrust_time = thrust_table(:,1);
 time = linspace(0,40,1000);
@@ -25,13 +25,12 @@ thrust_interp(isnan(thrust_interp)) = 0;
 %     end
 % end
 thrust_ts = timeseries(thrust_interp,time);
-mass_diff = 18.6;
-t_burn = 5.1;
-% mass_struct = 21.9;
-O8000 = zeros(8,1);
+mass_diff = 9.8;
+mass_motor = 16.8;
+t_burn = 3.9;
 j = 1;
-for m_init = 45:5:80
-    if m_init-mass_diff > 0
+for mass_struct = 14:2:30
+        m_init = mass_struct + mass_motor;
         m_final = m_init - mass_diff;
         k = -mass_diff/t_burn;
         i = 1;
@@ -44,9 +43,6 @@ for m_init = 45:5:80
         out = sim("ThreeDOF_Rocket_Simulator_v2.slx");
         heights = getElement(out.yout,'Altitude');
         heights_val = heights.Values.Data;
-        O8000(j) = max(heights_val);
-    else
-        O8000(j) = 0;
-    end
-    j = j + 1;
+        km9_130_O5500(j) = max(heights_val);
+        j = j+1;
 end
