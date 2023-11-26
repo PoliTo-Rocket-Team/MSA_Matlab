@@ -2,9 +2,12 @@
 with open("006dat.txt") as k:
     f = k.readlines()
 
-final_page= 100
+final_page= 200
 current_page= 2
 
+
+#TODO: PUT HERE NUMPER OF VALUES
+number_of_values=50
 #Declaring some arrays
 mystore=[]
 data = []
@@ -19,21 +22,22 @@ while current_page<final_page:
         if element == f"---------------AERODYNAMIC-METHODS-FOR-MISSILE-CONFIGURATIONS----------PAGE---{current_page}"or element == f"---------------AERODYNAMIC-METHODS-FOR-MISSILE-CONFIGURATIONS----------PAGE--{current_page}" :
             myindex = mystore.index(element)
             mach = mystore[myindex+4].replace("-","").strip()[7:10]
-            reynolds = mystore[myindex+4].replace("-","").strip()[22:40]
+            #reynolds = mystore[myindex+4].replace("-","").strip()[22:40]
             if (mystore[myindex+1] == '-------------------STATIC-AERODYNAMICS-FOR-BODY-FIN-SET-1'):
-                for i in range(1,20):
+                for i in range(1,20+number_of_values):
 
                     if (mystore[myindex+i] == '---------ALPHA-------CL--------CD------CL/CD-----X-C.P.') or mystore[myindex+i]=='---------ALPHA-------CL--------CD------CL/CD-----X-C.P.':
 
-                        cl_values =mystore[myindex+22:myindex+26]
+                        cl_values =mystore[(myindex+i+2):(myindex+i+number_of_values+2)]
                         print(cl_values)
                         for item in cl_values:
                             print(item.replace("-"," ").strip()[0:19].split(" "))
                             alpha =item.replace("-"," ").strip()[0:19].split(" ")[0]
                             cl = item.replace("-"," ").strip()[0:19].split(" ")[5]
                             if cl=="":
-                                cl = item.replace("-"," ").strip()[0:19].split(" ")[5]
-                            data.append((mach,reynolds,alpha,cl))
+                                cl = item.replace("-"," ").strip()[0:19].split(" ")[4]
+
+                            data.append((mach,alpha,cl))
 
     current_page=current_page+1
 
@@ -43,12 +47,12 @@ while current_page<final_page:
 print(data)
 saved = data[0][0]
 with open("flight_Data.txt","w") as k:
-    k.write("MACH,REYNOLDS ALPHA, CL\n")
+    k.write("MACH, ALPHA, CL\n")
     for element in data:
         if element[0] != saved:
             k.writelines("-"*10)
             k.writelines("\n")
-            k.writelines(f"{element[0]},{element[1]},{element[2]},{element[3]}\n")
+            k.writelines(f"{element[0]},{element[1]},{element[2]}\n")
             saved = element[0]
         else:
-            k.writelines(f"{element[0]},{element[1]},{element[2]},{element[3]}\n")
+            k.writelines(f"{element[0]},{element[1]},{element[2]}\n")
