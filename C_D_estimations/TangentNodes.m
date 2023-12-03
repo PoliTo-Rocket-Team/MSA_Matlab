@@ -20,7 +20,7 @@ plot(x,ys,"k","LineWidth",1)
 hold on
 plot(x,-ys,"k","LineWidth",1)
 
-S = 12; % Desidered Segments
+S = 13; % Desidered Segments
 N = S + 1; % Number of Nodes
 delta = (max(y_f)-min(y_f))/(N);
 x_t = zeros(N,1);
