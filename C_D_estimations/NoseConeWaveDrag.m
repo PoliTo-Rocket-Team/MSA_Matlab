@@ -7,18 +7,27 @@ L = 0.52; %nose length
 R = 0.05 ; %nose base radius
 C= 0; %haack series parameter, 0 for Von Karman
 n = 1/2; %power series parameter
-x = linspace(0,L,100);
+M = 1.2;
+g = 1.4; %ratio of specific heats
+P_inf = 301125; %freestream pressure, atmosferic pressure
+T_inf = 1; %freestream temperature
+rho_inf = 1.225; %freestream density
+
+x = linspace(0,L,1000);
+P =zeros(1000,1);
 
 %nosecone shape function
 %von karman
 %y = @(x) (R/sqrt(pi))*sqrt(acos(1-(2.*x)/L)-(sin(2.*acos(1-(2.*x)/L)))/2+C*(sin(acos(1-(2.*x)/L))).^3);
-
+%power series
 y = @(x) R*(x./L).^n;
 ys = y(x);
 
 %slope of the tangent lines
 %von karman
 %dy_by_dx = @(x) -(R.*((2.*cos(2.*acos(1 - (2.*x)./L)))./(L.*(1 - ((2.*x)./L - 1).^2.).^(1/2)) - 2./(L.*(1 - ((2.*x)./L - 1).^2).^(1/2)) + (6.*C.*(1 - ((2.*x)./L - 1).^2).^(1/2).*((2.*x)./L - 1))./L))./(2.*sqrt(pi).*(acos(1 - (2.*x)./L) - sin(2.*acos(1 - (2.*x)./L))/2 + C.*(1 - ((2.*x)./L - 1).^2).^(3/2)).^(1/2));
+%power series
+dy_by_dx = @(x) n*(R/L^n).*x.^(n-1);
 y_f = dy_by_dx(x);
 
 plot(x,ys,"k","LineWidth",1)
@@ -26,7 +35,7 @@ hold on
 plot(x,-ys,"k","LineWidth",1)
 axis([0 L -0.1 0.1])
 
-S = 30; % Desidered Segments
+S = 15; % Desidered Segments
 N = S + 1; % Number of Nodes
 delta = (max(y_f)-min(y_f))/(N); %gradient delta
 x_t = zeros(N,1); %x position of the tangent nodes
@@ -85,7 +94,7 @@ for j = 1:(length(x_t)-1)
     x2 = x_t(j+1);
     y1 = y_t(j);
     y2 = y_t(j+1);
-    m1 = dy_by_dx(x1);%slopes of the tangents in the tangent nodes
+    m1 = n*(R/L^n)*x1^(n-1);%slopes of the tangents in the tangent nodes
     m2 = dy_by_dx(x2);
     x = (y2-y1+m1*x1-m2*x2)/(m1-m2);
     y = m1*(x-x1)+y1;
@@ -96,7 +105,43 @@ end
 x_n(length(x_t)+1) = L;
 y_n(length(y_t)+1) = R;
 
+
+%barrowman method + expansion waves 
+NU = @(M) (atan((M^2 - 1)^(1/2)*((g - 1)/(g + 1))^(1/2))*(g + 1)^(1/2))/(g - 1)^(1/2) - atan((M^2 - 1)^(1/2));
+dNU = @(M) (M*((g - 1)/(g + 1))^(1/2)*(g + 1)^(1/2))/((M^2 - 1)^(1/2)*(((M^2 - 1)*(g - 1))/(g + 1) + 1)*(g - 1)^(1/2)) - 1/(M*(M^2 - 1)^(1/2));
+B = @(M) (g*M^2)/(2*(M^2-1));
+Omega = @(M) (1/M)*((1+M^2*(g-1)/2)/((g+1)/2))^((g+1)/(2*(g-1)));
 for k=1:length(x_n)-1
+    theta = atan((y_n(k+1)-y_n(k))./(x_n(k+1)-x_n(k)));
+    if k ==1
+        [M0,P0] = taylor_maccoll_solver(M, theta, g, P_inf, T_inf, rho_inf);%P costante in questo tratto
+        P = @(x) P0;
+        %syms x;
+        %Cdwl = (4/(g*M_inf^2))*int(P0*sin(theta)*2*pi,x,0,x_n(k+1));
+        M1 = M0;
+        dpds1 = 0;
+        P2 = P0;
+    else
+        [MC,PC] = taylor_maccoll_solver(M, theta,g, P_inf, T_inf, rho_inf);
+        B1 = B(M1);
+        nu1 = NU(M1);
+        O1 = Omega(M1);
+        f = NU - (thetapr-theta) - nu1;
+        df = dNU;
+        [M2,num_it,M2_vec] = NewtonMethod(M_inf,f,df,-10,0.01,10);
+        B2 = B(M2);
+        nu2 = (thetapr-theta) + nu1;
+        O2 = Omega(M2);
+        dpds2 = (B2/y_n(k))*((O1/O2)*sin(thetapr)-sin(theta))+(B2/B1)*(O1/O2)*dpds1;
+        %eta = dpds2 * (x-x2)/((PC-P2)*cos(theta))
+        %P = (PC-(PC-P2)*e^(-dpds2 * (x-x_n(k)/((PC-P2)*cos(theta))))
+        P2 = (PC-(PC-P2)*e^(-dpds2 * (x-x_n(k+1))/((PC-P2)*cos(theta))));
+        %(PC-(PC-P2)*e^(-dpds2 * (x-x2)/((PC-P2)*cos(theta))))
+        %Cdwl = (4/(g*M_inf^2))*int((PC-(PC-P2)*e^(-dpds2 * (x-x_n(k)/((PC-P2)*cos(theta))))*sin(theta)*2*pi,x,0,x_n(k+1));
+        M1 = M2;
+        dpds1 = dpds2;
+    end
     plot([x_n(k);x_n(k+1)], [y_n(k);y_n(k+1)],'g','linewidth',2)
     plot([x_n(k);x_n(k+1)], [-y_n(k);-y_n(k+1)],'g','linewidth',2)
+    thetapr = theta;
 end
