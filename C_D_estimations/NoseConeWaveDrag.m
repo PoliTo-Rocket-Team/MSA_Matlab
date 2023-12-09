@@ -2,14 +2,22 @@
 clc
 close all
 clear all
+format long
 
 L = 0.52; %nose length
 R = 0.05 ; %nose base radius
+A_ref = pi*R^2;
 C= 0; %haack series parameter, 0 for Von Karman
 n = 1/2; %power series parameter
-M = 1.2;
+c = 340;
+M_inf = 1.2;
+V_inf = c*M_inf;
+Machs = [1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2 2.2 2.4 2.6];
+DatMachs = [1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2 2.1 2.2 2.3 2.4 2.5 2.6];
+DatCds = [0.59 0.571 0.558 0.547 0.534 0.523 0.512 0.501 0.491 0.481 0.465 0.457 0.448 0.440 0.433];
+Cdps = zeros(length(Machs),1);
 g = 1.4; %ratio of specific heats
-P_inf = 301125; %freestream pressure, atmosferic pressure
+P_inf = 301325; %freestream pressure, atmosferic pressure
 T_inf = 1; %freestream temperature
 rho_inf = 1.225; %freestream density
 
@@ -35,7 +43,7 @@ hold on
 plot(x,-ys,"k","LineWidth",1)
 axis([0 L -0.1 0.1])
 
-S = 15; % Desidered Segments
+S = 10; % Desidered Segments
 N = S + 1; % Number of Nodes
 delta = (max(y_f)-min(y_f))/(N); %gradient delta
 x_t = zeros(N,1); %x position of the tangent nodes
@@ -111,37 +119,54 @@ NU = @(M) (atan((M^2 - 1)^(1/2)*((g - 1)/(g + 1))^(1/2))*(g + 1)^(1/2))/(g - 1)^
 dNU = @(M) (M*((g - 1)/(g + 1))^(1/2)*(g + 1)^(1/2))/((M^2 - 1)^(1/2)*(((M^2 - 1)*(g - 1))/(g + 1) + 1)*(g - 1)^(1/2)) - 1/(M*(M^2 - 1)^(1/2));
 B = @(M) (g*M^2)/(2*(M^2-1));
 Omega = @(M) (1/M)*((1+M^2*(g-1)/2)/((g+1)/2))^((g+1)/(2*(g-1)));
-for k=1:length(x_n)-1
-    theta = atan((y_n(k+1)-y_n(k))./(x_n(k+1)-x_n(k)));
+for l = 1:length(Machs)
+M_inf = Machs(l);
+V_inf = c*M_inf;
+Cdp = 0;
+for k=1:length(x_t)-1
+    theta = atan((y_t(k+1)-y_t(k))./(x_t(k+1)-x_t(k)))
     if k ==1
-        [M0,P0] = taylor_maccoll_solver(M, theta, g, P_inf, T_inf, rho_inf);%P costante in questo tratto
-        P = @(x) P0;
-        %syms x;
-        %Cdwl = (4/(g*M_inf^2))*int(P0*sin(theta)*2*pi,x,0,x_n(k+1));
-        M1 = M0;
-        dpds1 = 0;
+        [M0,P0] = taylor_maccoll_solver(M_inf, theta, g, P_inf, T_inf, rho_inf);%P is consta
+        Fx = @(x) P0*2*pi*sin(theta)*sin(theta)*x;   
+        %Cdwl = (4/(g*M_inf^2))*int(P0*sin(theta)*2*pi,x,0,x_t(k+1)) given
+        %by Barrowman
+        Cdwl = (integral(Fx,0,x_t(k+1)))/(0.5*rho_inf*V_inf^2*A_ref) %local Cd, a part of the final integral
+        M1 = M0; %mach number on the first frustrum is constant
+        dpds1 = 0; 
         P2 = P0;
     else
-        [MC,PC] = taylor_maccoll_solver(M, theta,g, P_inf, T_inf, rho_inf);
+        [MC,PC] = taylor_maccoll_solver(M_inf, theta,g, P_inf, T_inf, rho_inf)%to find the equivalent pressure on a cone with the same half-angle
         B1 = B(M1);
-        nu1 = NU(M1);
+        nu1 = real(NU(M1));
         O1 = Omega(M1);
-        f = NU - (thetapr-theta) - nu1;
-        df = dNU;
-        [M2,num_it,M2_vec] = NewtonMethod(M_inf,f,df,-10,0.01,10);
+        f = @(M) (atan((M^2 - 1)^(1/2)*((g - 1)/(g + 1))^(1/2))*(g + 1)^(1/2))/(g - 1)^(1/2) - atan((M^2 - 1)^(1/2)) - (thetapr-theta) - nu1;
+        df = @(M) (M*((g - 1)/(g + 1))^(1/2)*(g + 1)^(1/2))/((M^2 - 1)^(1/2)*(((M^2 - 1)*(g - 1))/(g + 1) + 1)*(g - 1)^(1/2)) - 1/(M*(M^2 - 1)^(1/2));
+        [M2,num_it,M2_vec] = NewtonMethod(M_inf,f,df,-10,0.01,10);%getting the mack behind the shockwave using the newton method 
+        M2 = real(M2);
         B2 = B(M2);
         nu2 = (thetapr-theta) + nu1;
         O2 = Omega(M2);
-        dpds2 = (B2/y_n(k))*((O1/O2)*sin(thetapr)-sin(theta))+(B2/B1)*(O1/O2)*dpds1;
+        dpds2 = (B2/y_t(k))*((O1/O2)*sin(thetapr)-sin(theta))+(B2/B1)*(O1/O2)*dpds1;
         %eta = dpds2 * (x-x2)/((PC-P2)*cos(theta))
-        %P = (PC-(PC-P2)*e^(-dpds2 * (x-x_n(k)/((PC-P2)*cos(theta))))
-        P2 = (PC-(PC-P2)*e^(-dpds2 * (x-x_n(k+1))/((PC-P2)*cos(theta))));
-        %(PC-(PC-P2)*e^(-dpds2 * (x-x2)/((PC-P2)*cos(theta))))
-        %Cdwl = (4/(g*M_inf^2))*int((PC-(PC-P2)*e^(-dpds2 * (x-x_n(k)/((PC-P2)*cos(theta))))*sin(theta)*2*pi,x,0,x_n(k+1));
+        P = @(x) (PC-(PC-P2)*exp(-dpds2 * (x-x_t(k))/((PC-P2)*cos(theta))));%pressure distribution on the frustrum
+        Fx = @(x) 2*pi.*sin(theta).*sin(theta).*x.*(PC-(PC-P2).*exp(-dpds2 .* (x-x_t(k))./((PC-P2).*cos(theta))));%drag force on the frustrum
+        Cdwl = (integral(Fx,x_t(k),x_t(k+1)))/(0.5*rho_inf*V_inf^2*A_ref)%local cd component
+        %updating the variables
         M1 = M2;
         dpds1 = dpds2;
+        P2 = P(x_t(k+1));
     end
     plot([x_n(k);x_n(k+1)], [y_n(k);y_n(k+1)],'g','linewidth',2)
     plot([x_n(k);x_n(k+1)], [-y_n(k);-y_n(k+1)],'g','linewidth',2)
     thetapr = theta;
+    Cdp = Cdp + Cdwl
 end
+Cdps(l)=Cdp;
+end
+figure
+plot(Machs,Cdps,'linewidth',2)
+hold on
+plot(DatMachs, DatCds,'linewidth',2)
+legend('Barrowman + Taylor-Maccoll (Nose cone only)','Missile Datcom (whole rocket)')
+xlabel('Mach number')
+ylabel('Pressure drag coefficient')

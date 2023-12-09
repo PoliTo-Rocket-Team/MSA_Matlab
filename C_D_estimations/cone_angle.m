@@ -45,7 +45,7 @@ options=odeset('Events','on');
 % we use ode23 solver which returns the numerical solution for the current
 % shock angle(Runga-Kutta method)
 
-[theta,v]=ode23('taylor_maccoll_eqn',[theta_shock, endtheta],[v_r_initial, v_t_initial], options); 
+[theta,v]=ode45('taylor_maccoll_eqn',[theta_shock, endtheta],[v_r_initial, v_t_initial], options); 
 
 % converts the angle values to degrees
 theta_degree=theta.*(180/(pi));

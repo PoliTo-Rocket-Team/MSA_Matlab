@@ -20,7 +20,7 @@ v_rin=v_in.*cos(theta_shock-delta);
 v_thin=v_in.*sin(theta_shock-delta);
 endtheta=0.1.*(pi)/180;
 options=odeset('Events','on');
-[theta,v]=ode23('taylor_maccoll_eqn',[theta_shock, endtheta],[v_rin, v_thin], options);
+[theta,v]=ode45('taylor_maccoll_eqn',[theta_shock, endtheta],[v_rin, v_thin], options);
 theta_degree=theta.*(180/(pi));
 cone_angle =theta_degree(length(theta_degree));
 
