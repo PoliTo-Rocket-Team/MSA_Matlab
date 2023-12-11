@@ -8,11 +8,11 @@
 % By: Rohan Kokate
 % Reference: Fundamentals of Aerodynamics, J. D. Anderson.
 
-function [m_cone,Pb] = taylor_maccoll_solver(M,theta,g,P_inf,T_inf,rho_inf)
+function [m_cone,Pc] = taylor_maccoll_solver(M_in,theta,g_in,P_inf,T_inf,rho_inf)
 
-M;              %enter freestream mach no
+M=M_in;              %enter freestream mach no
 theta_cone = theta;    %enter half-cone angle
-g;            %enter the value of ratio of specific heats
+g=g_in;            %enter the value of ratio of specific heats
 
 %flow properties upstream of shock(standard sea level conditions)
 P_freestream = P_inf;
