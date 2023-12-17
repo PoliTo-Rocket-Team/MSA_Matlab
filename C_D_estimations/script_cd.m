@@ -35,8 +35,7 @@ if Re <= 5e5
     tran_C_f = 0;
     rough_C_f = 0;
 elseif Re <= Re_cr
-    tran_C_f = (Re - 1700 * (3.46 * log(Re) - 5.6).^2) / ...
-        (Re * (3.46 * log(Re) - 5.6).^2);
+    tran_C_f = 1 / (3.46 * log(Re) - 5.6)^2 - 1700 / Re;
     lam_C_f = 0;
     rough_C_f = 0;
 else
@@ -49,9 +48,11 @@ Re_M = rho * L_r * sqrt(gamma * R * T) / mu;
 if Re_M < 5e5
     C_f_C_M = 1.328 / sqrt(Re);
 elseif Re_M < Re_cr
-    C_f_C_M = 1 / (3.46 * log(Re) - 5.6).^2 - 1700 / Re;
+    C_f_M = 1 / (3.46 * log(Re) - 5.6)^2 - 1700 / Re;
+    C_f_C_M = C_f_M * (1 - 0.09);
 else
-    C_f_C_M = 0.032 * (R_s / L_r)^2;
+    C_f_M = 0.032 * (R_s / L_r)^0.2;
+    C_f_C_M = C_f_M * (1 - 0.12);
 end
 %% C_D CALCULATION
 if mach^2 <= 0.1 %incompressible flow
