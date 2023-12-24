@@ -4,7 +4,7 @@ close all
 clear all
 format long
 
-L = 0.52; %nose length
+L = 0.45; %nose length
 R = 0.05 ; %nose base radius
 A_ref = pi*R^2;
 C= 0; %haack series parameter, 0 for Von Karman
@@ -13,7 +13,7 @@ c = 340;
 M_inf = 1.2;
 V_inf = c*M_inf;
 Machs = [ 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2 2.2 2.4 2.6];
-%Machs = [1.2 1.4 1.8 2];
+%Machs = [1.8];
 DatMachs = [1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2 2.1 2.2 2.3 2.4 2.5 2.6];
 DatCds = [0.59 0.571 0.558 0.547 0.534 0.523 0.512 0.501 0.491 0.481 0.465 0.457 0.448 0.440 0.433];
 Cdps = zeros(length(Machs),1);
