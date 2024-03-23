@@ -1,7 +1,13 @@
+%% startup
 clc
-clear all
+% clear all
 close all
-
+ % open("FLIGHT_DATA_SIMULATION.csv")
+ %% 
+mass = array2table(FLIGHTDATASIMULATION(1),FLIGHTDATASIMULATION(2))
+% Inertia
+% Thrust
+% DragCoefficient
 %% MASS 
 mass_table = readtable('Mass.txt');
 time_mass = mass_table.Var1; %s
