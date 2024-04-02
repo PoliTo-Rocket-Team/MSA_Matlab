@@ -41,10 +41,5 @@ for mass_struct = 19.225 %
             i = i + 1;
         end
         mass_ts = timeseries(mass,time);
-        out = sim("ThreeDOF_Rocket_Simulator_v2.slx");
-        heights = getElement(out.yout,'Altitude');
-        heights_val = heights.Values.Data;
-        km3_M2400T(j) = max(heights_val); %modified
-        j = j+1;
 end
 save("rocketdata.mat","thrust_ts","mass_ts")
