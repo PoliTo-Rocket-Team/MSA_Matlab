@@ -16,6 +16,11 @@ for i=1:11
     hold on
 end
 
+%%
+Mach_limit=Mach;
+Cd_limit=Cd;
+% to be used in the lookup table
+
 %% ODE
 figure(2)
 tspan=[27 8];
@@ -25,6 +30,7 @@ y0=[0;3000];
 
 options = odeset('RelTol',1e-3,'Stats','on');
 
+
 for i=1:11
 [t,y{1,i}] = ode45(@(t,y) odefun1(t,y,y_Cd{1,i}), tspan,y0,options);
 plot(t,y{1,i}(:,2),'-');
@@ -32,8 +38,10 @@ hold on
 end
 y_mat=cell2mat(y);
 
+save("trajectories.mat", "y","t","y_mat")
+
 function dydt = odefun1(t,y,y_Cd)
-M=25.3;
+M=21.9830000000000; %changed
 g=9.81;
 A=0.0132665;
 
@@ -49,13 +57,15 @@ T=@(x) T_r+K*x;
 c=@(x) sqrt(gamma*R*T(x)); %x=y(2) h
 
 
-for i=1:11
-    Mach=y(1)/c(y(2));
-    dydt = zeros(2,1);
-    dydt(1)= -g-y_Cd(Mach)*(A/M/2)*rho(y(2))*y(1)^2;
-    dydt(2) = y(1); %dh/dt=v
+Mach=y(1)/c(y(2));
+dydt = zeros(2,1);
+dydt(1)= -g+y_Cd(Mach)*(A/M/2)*rho(y(2))*y(1)^2; %dv/dt=a 
+dydt(2) = y(1); %dh/dt=v
+
 end
-end
+
+
+
 
 
 %% Motor function
