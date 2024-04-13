@@ -45,5 +45,13 @@ cd_vals = cd_table.Var2;
 cd_vals = [0.626;cd_vals];
 cd_ts = timeseries(cd_vals, time_cd);
 
+%% Static MARGIN
+static = readtable('static_margin.txt');
+time_st = static.Var1;
+time_st = [0;time_st];
+static_vals = static.Var2;
+static_vals = [0;static_vals]
+static_ts = timeseries(static_vals,time_st)
+
 
 
