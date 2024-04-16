@@ -1,0 +1,30 @@
+# Air Brakes Sim Mini Guide
+This readme file is intented to serve as a brief guide to better understand how to run theAir Brakes Control System (ABCS) simulator
+
+## Option 1:  Using the already computed variables
+To simply run the simulator using the already computed variables, run `sim_start.m`
+
+A message will display if the required .mat files have loaded successfully and the `airbrake_sim.slx` will automatically open, ready for simulation
+
+## Option 1:  Using freshly generated variables
+Should the user wish to alter some of the simulation parameters, another option is to generate all the required variables manually 
+
+To do so, start by running `step0_initialize_values.m` 
+
+The messages displayed in the command line will guide the user through the generation of all the required variables by running, subsequently, `step1_simtime_calculator_script.m` and `step2_trajectories_sim_script.m`
+
+At the end of each script, the user will be prompted to choose whether they want to save the newly generated variables to the respective .mat files
+
+At the end of this process, `airbrake_sim.slx` will automatically open, ready for simulation
+
+N.B. Additional information on which variables can be tuned and on the pre-requirements to run the each script can be found at the top of each file, in MatLab comment form 
+
+
+
+
+## Additional info
+The `PSO_script.m` is used for generating the decision variables of the PID through particle swarm optimization
+Additional info regarding its use can be found at the top the script, in MatLab comment form 
+
+The `lookup_table_gen` folder contains the file pertaining to the generation of the lookup table(s) which correlates mach number, cd and air brakes extension
+No additional info can be found at the moment due to the lack of need to frequently alter said lookup table(s)

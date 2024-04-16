@@ -3,7 +3,7 @@
 % clc
 
 %using curvefit to export as a simulink lookup table
-%table parameter is saved MachCd2Extensintable.mat
+%table parameter is saved MachExtension2Cdtable.mat
 
 %% Extension as a function of Cd and Mach
 T=readtable("Rocketteam_CD_MD.xlsx"); %from missile datcom
