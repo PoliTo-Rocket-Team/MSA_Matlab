@@ -68,6 +68,7 @@ end
 figure(1)
 xlabel('Time (s)');
 ylabel('Velocity (m/s)');
+xlim([10, t2a]);
 
 figure(2)
 xlabel('Time (s)');
