@@ -15,9 +15,10 @@ close all;
 % bounds of the decision variables can be selected by modifiying VarMin and
 % VarMax
 
-% the variables output must be transcribed manually into the PID block
-% inside airbrake_sim.slx (but they may be temporarely changed to the
-% output variables themselves to speed up the optimization process)
+% the variables output should be transcribed manually into the PID block
+% inside airbrake_sim.slx once tuning is complete, but they must be
+% temporarely changed to the output variables themselves during tuning or
+% the algorithm will not work as intended
 
 %% Problem Definiton
 
@@ -25,10 +26,10 @@ close all;
 
 nVar = 4;        % Number of Unknown (Decision) Variables
 VarSize = [1 nVar];         % Matrix Size of Decision Variables
-VarMin = [1 1 1 1];	% Lower Bound of Decision Variables
-VarMax = [100 10 10 100];    % Upper Bound of Decision Variables
+VarMin = [250 40 20 10];	% Lower Bound of Decision Variables
+VarMax = [300 80 60 50];    % Upper Bound of Decision Variables
 %% Parameters of PSO
-MaxIt = 3;     % Maximum Number of Iterations
+MaxIt = 10;     % Maximum Number of Iterations
 nPop = 4;      % Population Size (Swarm Size)
 w = 1;          % Intertia Coefficient
 wdamp = 0.99;   % Damping Ratio of Inertia Coefficient
@@ -59,7 +60,7 @@ for i=1:nPop
     % Initialize Velocity
     particle(i).Velocity = zeros(VarSize);
     % Evaluation
-    sim('airbrake_sim');
+    out = sim('Airbrake_sim');
     particle(i).Cost = out.Fobj(end,1);
     % Update the Personal Best
     particle(i).Best.Position = particle(i).Position;
@@ -93,7 +94,7 @@ for it=1:MaxIt
         D = particle(i).Position(3);
         N = particle(i).Position(4);
         % Evaluation
-        sim('airbrake_sim');
+        out = sim('Airbrake_sim');
         particle(i).Cost = out.Fobj(end,1);
         % Update Personal Best
         if particle(i).Cost < particle(i).Best.Cost
@@ -119,5 +120,8 @@ P = GlobalBest.Position(1)
 I = GlobalBest.Position(2)
 D = GlobalBest.Position(3)
 N = GlobalBest.Position(4)
-open('airbrake_sim');
-sim('airbrake_sim');
+
+% save pid_var.mat P I D N
+
+open('Airbrake_sim');
+sim('Airbrake_sim');

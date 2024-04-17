@@ -96,6 +96,10 @@ end
 
 clearvars -except thrust_ts mass_ts t y y_mat dy dy_mat surfaceBlockParameters1 t2a apogee
 
-disp('-> ready for simulation, opening airbrake_sim.slx... <-');
+load pid_var.mat
+fprintf('PID variables loaded \n\n');
 
-open airbrake_sim.slx
+disp('-> ready for simulation, running airbrake_sim.slx... <-');
+
+open Airbrake_sim.slx
+out = sim('Airbrake_sim.slx');

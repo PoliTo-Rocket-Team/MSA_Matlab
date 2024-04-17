@@ -1,0 +1,12 @@
+# Ignore the slprj folder
+slprj/
+
+# Ignore Simulink cache files
+*.slxc
+
+# Ignore Simulink autosave files
+*.autosave
+
+# Ignore MatLab autosave files
+*.asv
+
