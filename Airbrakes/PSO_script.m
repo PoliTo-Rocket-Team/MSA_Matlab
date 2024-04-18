@@ -3,22 +3,25 @@ clc;
 close all;
 
 % WARNING
-% This script requires atleast a full run of the airbrake_sim.slx simulator
-% to work accordingly
+% to avoid running into problems while running this script, a full run of
+% the simulator before starting the tuning process is suggested
 
 % INFO
-% this PSO script is used for generating the P, I, D and N values used in
+% this PSO script is used for tuning the P, I, D and N values used in
 % the PID which controls the air brakes control system
 
-% the aibrake_sim.slx needs to be run in order for this script to work
+% the aibrake_sim.slx should be run once beforehand in order for this
+% script to work without issues
 
 % bounds of the decision variables can be selected by modifiying VarMin and
-% VarMax
+% VarMax, while iteration number can be modified with MaxIt
 
-% the variables output should be transcribed manually into the PID block
-% inside airbrake_sim.slx once tuning is complete, but they must be
-% temporarely changed to the output variables themselves during tuning or
-% the algorithm will not work as intended
+% the variables output should be saved to the pid_var.mat file manually
+% using the save command commented at the end of this script only once the
+% tuning process is complete
+
+% further information on how to tune the PID parameters can be found in the
+% README.md located inside the Airbrakes folder
 
 %% Problem Definiton
 
@@ -26,8 +29,8 @@ close all;
 
 nVar = 4;        % Number of Unknown (Decision) Variables
 VarSize = [1 nVar];         % Matrix Size of Decision Variables
-VarMin = [250 40 20 10];	% Lower Bound of Decision Variables
-VarMax = [300 80 60 50];    % Upper Bound of Decision Variables
+VarMin = [18 0.2 9.5 50];	% Lower Bound of Decision Variables
+VarMax = [19 0.35 10.5 54];    % Upper Bound of Decision Variables
 %% Parameters of PSO
 MaxIt = 10;     % Maximum Number of Iterations
 nPop = 4;      % Population Size (Swarm Size)
@@ -121,7 +124,8 @@ I = GlobalBest.Position(2)
 D = GlobalBest.Position(3)
 N = GlobalBest.Position(4)
 
-% save pid_var.mat P I D N
 
 open('Airbrake_sim');
 sim('Airbrake_sim');
+
+% save pid_var.mat P I D N

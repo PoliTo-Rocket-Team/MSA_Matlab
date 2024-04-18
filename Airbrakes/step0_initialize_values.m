@@ -2,6 +2,18 @@ clc
 clear all
 close all
 
+% MASTER WARNING
+% the PID is tuned for the parameters (if not previously modified by the
+% user) which can be loaded through the sim_start.m script, and as such any
+% modification in the variables which will be generated through this 3-step
+% process might cause a suboptimal response
+
+% therefore, in case of substantial modifications to the simulation
+% variables, further tuning of the PID is required
+
+% additional info on the PID tuning process can be found on the README.md
+% located in the Airbrakes folder
+
 % INFO
 % the scope of this file is generating the 1x1 timeserie variables which
 % correlate the thrust of the engine and the mass of the whole rocket
