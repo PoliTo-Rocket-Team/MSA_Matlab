@@ -84,7 +84,7 @@ t = cell2mat(t_raw);
 
 fprintf('trajectories variables saved to workspace \n\n');
 
-answer = input('do you want to save the variables to trajectories.mat? (yes/[no]) \n>>', 's');
+answer = input('do you want to save the variables to trajectories.mat? (yes/[no]) \n->', 's');
 
 if isempty(answer) || strcmpi(answer, 'no')
     fprintf('\n');
@@ -96,6 +96,7 @@ end
 
 clearvars -except thrust_ts mass_ts t y y_mat dy dy_mat surfaceBlockParameters1 t2a apogee
 
+fprintf('done \n\n');
 load pid_var.mat
 fprintf('PID variables loaded \n\n');
 

@@ -50,7 +50,7 @@ disp('t2a saved to workspace');
 fprintf('apogee saved to workspace \n\n');
 
 
-answer = input('do you want to save the variables to apogee_var.mat? (yes/[no]) \n>>', 's');
+answer = input('do you want to save the variables to apogee_var.mat? (yes/[no]) \n->', 's');
 
 if isempty(answer) || strcmpi(answer, 'no')
     fprintf('\n');

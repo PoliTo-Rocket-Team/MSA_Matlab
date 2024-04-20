@@ -59,7 +59,7 @@ end
 disp('thrust_ts saved to workspace');
 fprintf('mass_ts saved to workspace \n\n');
 
-answer = input('do you want to save the variables to rocketdata.mat? (yes/[no]) \n>>', 's');
+answer = input('do you want to save the variables to rocketdata.mat? (yes/[no]) \n->', 's');
 
 if isempty(answer) || strcmpi(answer, 'no')
     fprintf('\n');
