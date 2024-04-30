@@ -3,8 +3,8 @@ close all
 clc
 
 % WARNING
-% this script needs mass_ts, thrust_ts, surfaceBlockParameters1, t2a and
-% apogee to work
+% this script needs mass_ts, thrust_ts, surfaceBlockParameters1, t2a,
+% apogee and abcs_deploy to work
 
 % generate them through the previous steps or load rocketdata.mat,
 % MachExtension2Cdtable.mat and apogee_var.mat
@@ -68,13 +68,13 @@ end
 figure(1)
 xlabel('Time (s)');
 ylabel('Velocity (m/s)');
-xlim([10, t2a]);
+xlim([6, t2a]);
 
 figure(2)
 xlabel('Time (s)');
 ylabel('Altitude (m)');
-yline(2000, '--');
-ylim([1900, max(out.vert_altitude.Data)]);
+yline(1500, '--');
+ylim([abcs_deploy - 100, max(out.vert_altitude.Data)]);
 
 y_mat = cell2mat(y_mat_raw);
 dy_mat = cell2mat(dy_mat_raw);
@@ -94,7 +94,7 @@ else
     fprintf('trajectories variables saved to trajectories.mat \n\n');
 end
 
-clearvars -except thrust_ts mass_ts t y y_mat dy dy_mat surfaceBlockParameters1 t2a apogee
+clearvars -except thrust_ts mass_ts t y y_mat dy dy_mat surfaceBlockParameters1 t2a apogee abcs_deploy
 
 fprintf('done \n\n');
 load pid_var.mat

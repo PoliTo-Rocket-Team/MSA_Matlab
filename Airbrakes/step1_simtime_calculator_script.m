@@ -3,7 +3,7 @@ close all
 clc
 
 % WARNING
-% this script needs mass_ts and thrust_ts to work
+% this script needs mass_ts, thrust_ts and abcs_deploy to work
 % generate them through step0_initialize_values.m or load rocketdata.mat
 
 % INFO
@@ -61,6 +61,6 @@ else
     fprintf('apogee saved to apogee_var.mat \n\n');
 end
 
-clearvars -except thrust_ts mass_ts t y y_mat dy dy_mat surfaceBlockParameters1 t2a apogee
+clearvars -except thrust_ts mass_ts t y y_mat dy dy_mat surfaceBlockParameters1 t2a apogee abcs_deploy
 
 disp('done, proceed to step 2');
