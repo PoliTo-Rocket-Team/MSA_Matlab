@@ -23,6 +23,13 @@ N.B. Additional information on which variables can be tuned and on the pre-requi
 
 
 ## Additional info
+### Code generation
+The `codegen_model.slx` schematic represents the ABCS model without the ThreeDoF model for code generation purposes
+
+The model takes the altitude and the vertical velocity values fed by the in-flight computer and outputs the calculated air brakes extension value
+
+With the Simulink Coder toolbox installed, adequate settings for code generation can be chosen through the Simulink settings panel for the aforementioned model
+
 ### PSO PID tuning
 The `PSO_script.m` is used for generating the decision variables of the PID through particle swarm optimization
 
