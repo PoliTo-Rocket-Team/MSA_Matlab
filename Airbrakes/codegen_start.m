@@ -16,4 +16,4 @@ load MachExtension2Cdtable.mat
 fprintf('required workspace variables loaded \n\n');
 disp('-> ready for code generation, opening codegen_model.slx... <-');
 
-open Airbrake_sim.slx
+open codegen_model.slx
