@@ -1,6 +1,8 @@
+%% startup
 clc
-clear all
+ clear all
 close all
+
 
 %% MASS 
 mass_table = readtable('Mass.txt');
@@ -12,7 +14,7 @@ mass_ts = timeseries(mass_vals, time_mass);
 
 
 %% INERTIA
-inertia_table = readtable('Inertia.txt');
+inertia_table = readtable('inertia.txt');
 time_inertia = inertia_table.Var1; %s
 time_inertia = [0;time_inertia];
 inertia_vals = inertia_table.Var2; %kg*m2
@@ -36,12 +38,20 @@ thrust_vals = [0;thrust_vals];
 thrust_ts = timeseries(thrust_vals, time_thrust);
 
 %% DRAG COEFFICIENT
-cd_table = readtable('DragCoefficient.txt');
+cd_table = readtable('cd_time.txt');
 time_cd = cd_table.Var1; %s
 time_cd = [0;time_cd];
 cd_vals = cd_table.Var2; 
 cd_vals = [0.626;cd_vals];
 cd_ts = timeseries(cd_vals, time_cd);
+
+%% Static MARGIN
+static = readtable('static_margin.txt');
+time_st = static.Var1;
+time_st = [0;time_st];
+static_vals = static.Var2;
+static_vals = [0;static_vals]
+static_ts = timeseries(static_vals,time_st)
 
 
 
