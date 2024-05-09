@@ -26,6 +26,8 @@ N.B. Additional information on which variables can be tuned and on the pre-requi
 ### Code generation
 The `codegen_model.slx` schematic represents the ABCS model without the ThreeDoF model for code generation purposes
 
+`codegen_start.m` acts like `sim_start.m`, loading the required variables for code generation and opening the code generation schematic
+
 The model takes the altitude and the vertical velocity values fed by the in-flight computer and outputs the calculated air brakes extension value
 
 With the Simulink Coder toolbox installed, adequate settings for code generation can be chosen through the Simulink settings panel for the aforementioned model
