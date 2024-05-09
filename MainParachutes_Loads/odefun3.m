@@ -1,4 +1,4 @@
-function dydt = odefun(t,y)
+function dydt = odefun3(t,y)
 rho = 0.9556;
 m_p = 0.213;
 m_V = 9.972;
@@ -15,8 +15,8 @@ W_p = m_p*9.81;
 t_f = (1.18+1.62+0.76+0.75+0.92+1.03+0.43+0.7+0.72+0.46+0.44+0.6+0.5+1.25+0.72)/15;
 t_f = 0.7;
 dydt=zeros(4,1);
-dydt(4)=CdS/t_f; %%CdS finale / filling time
-dydt(2)=(3/2).*rho.*k_a.*(y(4).^(1/2)).*(CdS/t_f);
+dydt(4)= 0; %%CdS finale / filling time
+dydt(2)=(3/2).*rho.*k_a.*(y(4).^(1/2)).*(0);
 dydt(1)=-(y(3)+(0.5.*rho.*y(1).^2.*(CdS_r+CdS_d))-W_V)./m_V;
 dydt(3)= 0.5.*rho.*(2.*y(1).*dydt(1).*y(4)+((y(1)).^2).*dydt(4))
 +dydt(1).*dydt(2)+0.75.*rho.*k_a.*((y(4)).^(-0.5)).*((dydt(4)).^2).*y(1)
