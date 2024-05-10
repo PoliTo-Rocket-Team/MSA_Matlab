@@ -4,6 +4,7 @@ tspan = [0 0.7];
 y0 = [27.379 0 0 0];
 [t,y] = ode45(@(t,y) odefun(t,y), tspan, y0);
 
+
 y_0 = [y(end,1) y(end,2) y(end,3) y(end,4)];
 Tspan = [0.7 10];
 [t_1,y_1] = ode45(@(t,y) odefun3(t,y), Tspan, y_0);
@@ -34,3 +35,8 @@ title("CdS")
 xlabel("t(s)")
 ylabel("CdS(m^2)")
 grid on
+figure
+plot(t,acc,"color","k")
+title("Acceleration")
+xlabel("t(s)")
+ylabel("v'(m/s^2)")
