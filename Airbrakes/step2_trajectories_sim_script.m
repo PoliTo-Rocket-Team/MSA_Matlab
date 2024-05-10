@@ -18,6 +18,8 @@ clc
 % alternatively, the trajectories.mat file can be loaded to load the required
 % variables without the need of running this code
 
+t_int = 0.2; % trajectories step size
+
 t_sim = t2a; % sim time (time-to-apogee)
 
 
