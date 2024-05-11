@@ -5,12 +5,34 @@ y0 = [27.379 0 0 0];
 [t,y] = ode45(@(t,y) odefun(t,y), tspan, y0);
 
 
+
+rho = 1.19934; %Calculation of rho at 270 meters predicted opening of the main chute + 20 meters of ask 't harde
+m_p = 0.135;
+m_V = 18.640;
+p = 0.2;
+CdS = 4.8557;
+CdS_d = 0.2467;
+C_Dr = 0.4523;
+S_r = 1.2456; %2pi r *l
+CdS_r = C_Dr * S_r;
+k_g = 1.068*(1-1.465*p-0.25975*p^2+1.2626*p^3);
+k_a = ((4/3)*pi*0.6^3*k_g)/((CdS)^(3/2));
+W_V = m_V*9.81;
+W_p = m_p*9.81;
+Do = 66/39.37
+Vs = 24.70
+t_f = 8*Do/Vs^0.9
+
+
+
+
 y_0 = [y(end,1) y(end,2) y(end,3) y(end,4)];
 Tspan = [0.7 10];
 [t_1,y_1] = ode45(@(t,y) odefun3(t,y), Tspan, y_0);
 t = [t;t_1];
 y = [y;y_1];
 
+acc = (y(:,3) + 0.5*rho.*y(:,1).^2*(CdS_r+CdS_d)-W_V)/m_V
 figure
 plot(t,y(:,1),"Color","red")
 title("velocity")
